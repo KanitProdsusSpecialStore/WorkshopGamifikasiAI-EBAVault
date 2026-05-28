@@ -184,7 +184,7 @@
             <p style="background: var(--dark); color: var(--secondary); display: inline-block; padding: 5px 10px; font-weight: bold;">PROJECT: ADAPTABILITY PROTOCOL</p>
             
             <div class="callout">
-                <p>âš ï¸ <strong>THE WHY:</strong> Operasional macet bukan cuma urusan teknis! Saldo emosional (Emotional Bank Account - Covey) yang zonk bikin komunikasi mampet. Siap jadi pro di <i>Platinum Rule</i>?</p>
+                <p>⚠️ <strong>THE WHY:</strong> Operasional macet bukan cuma urusan teknis! Saldo emosional (Emotional Bank Account - Covey) yang zonk bikin komunikasi mampet. Siap jadi pro di <i>Platinum Rule</i>?</p>
             </div>
 
             <div class="form-group">
@@ -229,7 +229,7 @@
             <div class="dashboard-top">
                 <div class="stat-box" id="hud-user">USER: -</div>
                 <div class="stat-box" id="hud-score" style="color: var(--primary);">SALDO: $0</div>
-                <button id="mute-btn" onclick="audioEngine.toggleMute()" title="Toggle Music">ðŸ”Š</button>
+                <button id="mute-btn" onclick="audioEngine.toggleMute()" title="Toggle Music">🔊</button>
             </div>
 
             <div class="progress-container">
@@ -238,13 +238,13 @@
             </div>
 
             <div class="badges" id="badges-container">
-                <div class="badge" id="badge-1"><span>ðŸ¥‰</span>Level 1</div>
-                <div class="badge" id="badge-2"><span>ðŸ¥ˆ</span>Level 2</div>
-                <div class="badge" id="badge-3"><span>ðŸ¥‡</span>Master</div>
+                <div class="badge" id="badge-1"><span>🥉</span>Level 1</div>
+                <div class="badge" id="badge-2"><span>🥈</span>Level 2</div>
+                <div class="badge" id="badge-3"><span>🥇</span>Master</div>
             </div>
 
             <div class="story-hint">
-                ðŸ’¡ HINT: Analisis apakah lawan bicara butuh tempo cepat/lambat, dan fokus pada tugas/hubungan personal.
+                💡 HINT: Analisis apakah lawan bicara butuh tempo cepat/lambat, dan fokus pada tugas/hubungan personal.
             </div>
 
             <div class="grid" id="card-grid">
@@ -287,7 +287,7 @@
         </div>
     </div>
 
-    <footer>Education & Training Dept. Â© 2026</footer>
+    <footer>Education & Training Dept. © 2026</footer>
 
     <!-- FEEDBACK OVERLAY -->
     <div class="feedback-overlay" id="feedback-overlay">
@@ -299,6 +299,42 @@
     </div>
 
     <script>
+        /**
+         * FUNGSI API GOOGLE SHEETS (Client-Side)
+         * Bertugas mengirimkan payload data performa pemain secara asynchronous.
+         */
+        async function sendGameDataToGoogleSheets(playerData) {
+            // URL Web App GAS Anda
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzVU8ctsHrUCcPC4mPRixse1Ilj23541Sl8g8FwzuRqmox1z81XXitzquiIlUvZb9vn/exec';
+
+            try {
+                console.log("Mempersiapkan transmisi data ke Google Sheets...", playerData);
+                
+                // Fetch API Request
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        // text/plain digunakan untuk menghindari preflight CORS (OPTIONS)
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(playerData)
+                });
+
+                const result = await response.json();
+                
+                if (result.status === "success") {
+                    console.log("✅ Berhasil menyimpan ke Database:", result.message);
+                } else {
+                    console.error("⚠️ Server GAS merespon dengan error:", result.message);
+                }
+                
+            } catch (error) {
+                console.error("❌ Gagal mengirim data. Periksa koneksi jaringan Anda.", error);
+            }
+        }
+
+
         /**
          * AUDIO ENGINE (Web Audio API)
          * Men-generate synth sounds agar tidak perlu file external.
@@ -317,7 +353,7 @@
             
             toggleMute() {
                 this.isMuted = !this.isMuted;
-                document.getElementById('mute-btn').innerText = this.isMuted ? 'ðŸ”‡' : 'ðŸ”Š';
+                document.getElementById('mute-btn').innerText = this.isMuted ? '🔇' : '🔊';
                 if (this.isMuted) {
                     this.stopBGM();
                 } else {
@@ -422,7 +458,6 @@
             { id: 3, s: "Klien sangat analitis, ragu memutuskan dan meminta banyak sekali dokumen pendukung.", r: "Jangan buru-buru. Sediakan laporan terstruktur & beri waktu mereka menganalisis.", hint: "Fokus Tugas & Tempo Lambat" },
             { id: 4, s: "Tim operasional terlihat santai, lebih suka ngobrol asik sebelum bahas target.", r: "Ikuti tempo santai mereka, buka dengan obrolan ringan sebelum masuk ke deadline.", hint: "Fokus Orang & Tempo Cepat/Santai" },
             { id: 5, s: "Stakeholder senior marah karena merasa tidak dilibatkan dalam keputusan.", r: "Tetap tenang (Deposit), akui kesalahan proses, dan minta arahannya secara spesifik.", hint: "Membangun Trust" }
-            // Menggunakan 5 pasang (10 kartu) agar ideal dimainkan di mobile tanpa terlalu panjang
         ];
 
         const gameApp = {
@@ -555,7 +590,7 @@
                         card1.classList.add('matched');
                         card2.classList.add('matched');
                         
-                        this.history.push(`<div class="result-item" style="border-left: 5px solid var(--secondary);">âœ… <b>DEPOSIT:</b> Respon adaptif sukses terhadap [${dataRef.hint}]</div>`);
+                        this.history.push(`<div class="result-item" style="border-left: 5px solid var(--secondary);">✅ <b>DEPOSIT:</b> Respon adaptif sukses terhadap [${dataRef.hint}]</div>`);
                         this.showFeedbackPop(true, "DEPOSIT SUKSES! +$100", `Tepat! Anda berhasil mengatur tempo dan fokus sesuai *Platinum Rule*.`);
                         
                     } else {
@@ -566,7 +601,7 @@
                         card1.classList.remove('flipped');
                         card2.classList.remove('flipped');
                         
-                        this.history.push(`<div class="result-item" style="border-left: 5px solid var(--primary);">âŒ <b>WITHDRAWAL:</b> Refleks meleset, salah merespon stakeholder.</div>`);
+                        this.history.push(`<div class="result-item" style="border-left: 5px solid var(--primary);">❌ <b>WITHDRAWAL:</b> Refleks meleset, salah merespon stakeholder.</div>`);
                         this.showFeedbackPop(false, "WITHDRAWAL! -$25", "Kurang tepat! Skenario dan respon tidak nyambung. Perhatikan apakah mereka butuh tempo cepat/lambat.");
                     }
                     
@@ -614,6 +649,10 @@
                 }
             },
 
+            /**
+             * TRIGGER API GOOGLE SHEETS
+             * Logika pengiriman data disematkan di dalam fungsi endGame saat game selesai
+             */
             endGame() {
                 audioEngine.stopBGM();
                 audioEngine.playSFX('win');
@@ -629,35 +668,40 @@
                 const statusEl = document.getElementById('final-status');
                 const reinfEl = document.getElementById('final-reinforcement');
 
+                let finalStatusStr = ""; // Variabel penampung status untuk dilempar ke Spreadsheet
+
                 if (this.score >= 400) {
-                    statusEl.innerText = "ðŸŒŸ OUTSTANDING ADAPTABILITY!";
+                    statusEl.innerText = "🌟 OUTSTANDING ADAPTABILITY!";
                     statusEl.style.color = "var(--dark)";
                     reinfEl.innerText = "Luar biasa! Saldo emosional Anda sangat tinggi. Anda membuktikan bahwa dengan kesadaran mengatur tempo dan fokus (Platinum Rule), ruang aman untuk pemecahan masalah akan terbuka lebar.";
+                    finalStatusStr = "Outstanding Adaptability";
                 } else if (this.score >= 200) {
-                    statusEl.innerText = "ðŸ‘ GOOD, BUT KEEP REFILLING!";
+                    statusEl.innerText = "👍 GOOD, BUT KEEP REFILLING!";
                     statusEl.style.color = "var(--dark)";
                     reinfEl.innerText = "Anda memahami konsepnya, tapi refleks di lapangan butuh dipertajam. Ingat, kegagalan operasional seringkali berasal dari saldo emosional yang rendah.";
+                    finalStatusStr = "Good, But Keep Refilling";
                 } else {
-                    statusEl.innerText = "âš ï¸ DANGER: EMOTIONAL BANKRUPTCY";
+                    statusEl.innerText = "⚠️ DANGER: EMOTIONAL BANKRUPTCY";
                     statusEl.style.color = "var(--primary)";
                     reinfEl.innerText = "Waspada! Terlalu banyak withdrawal. Anda harus membuang ego dan mulai memetakan gaya stakeholder secara sadar. Lakukan Deposit mulai besok!";
+                    finalStatusStr = "Danger: Emotional Bankruptcy";
                 }
 
                 // Render Evaluasi Kompetensi
                 const evalDetails = document.getElementById('evaluation-details');
                 let evalHTML = "";
                 if (this.score >= 400) {
-                    evalHTML += `<li>âœ… <b>Penguasaan Platinum Rule:</b> SANGAT TINGGI. Anda mahir mengubah tempo dan fokus demi kenyamanan stakeholder.</li>`;
-                    evalHTML += `<li>âœ… <b>Manajemen Saldo Emosional:</b> EXCELLENT. Anda konsisten melakukan 'Deposit' yang memperkuat jaring pengaman komunikasi.</li>`;
-                    evalHTML += `<li>ðŸŽ¯ <b>Rekomendasi:</b> Pertahankan refleks proaktif ini dan jadilah <i>role model</i> bagi rekan tim lainnya.</li>`;
+                    evalHTML += `<li>✅ <b>Penguasaan Platinum Rule:</b> SANGAT TINGGI. Anda mahir mengubah tempo dan fokus demi kenyamanan stakeholder.</li>`;
+                    evalHTML += `<li>✅ <b>Manajemen Saldo Emosional:</b> EXCELLENT. Anda konsisten melakukan 'Deposit' yang memperkuat jaring pengaman komunikasi.</li>`;
+                    evalHTML += `<li>🎯 <b>Rekomendasi:</b> Pertahankan refleks proaktif ini dan jadilah <i>role model</i> bagi rekan tim lainnya.</li>`;
                 } else if (this.score >= 200) {
-                    evalHTML += `<li>âš ï¸ <b>Penguasaan Platinum Rule:</b> CUKUP. Anda paham konsepnya, tapi kadang meleset dalam merespon tempo/fokus lawan bicara.</li>`;
-                    evalHTML += `<li>âš ï¸ <b>Manajemen Saldo Emosional:</b> STABIL. Saldo positif, tapi beberapa 'Withdrawal' tak perlu masih terjadi akibat refleks yang keliru.</li>`;
-                    evalHTML += `<li>ðŸŽ¯ <b>Rekomendasi:</b> Berhenti sejenak sebelum merespon. Analisis kembali apakah lawan bicara sedang berfokus pada Tugas atau Hubungan Personal.</li>`;
+                    evalHTML += `<li>⚠️ <b>Penguasaan Platinum Rule:</b> CUKUP. Anda paham konsepnya, tapi kadang meleset dalam merespon tempo/fokus lawan bicara.</li>`;
+                    evalHTML += `<li>⚠️ <b>Manajemen Saldo Emosional:</b> STABIL. Saldo positif, tapi beberapa 'Withdrawal' tak perlu masih terjadi akibat refleks yang keliru.</li>`;
+                    evalHTML += `<li>🎯 <b>Rekomendasi:</b> Berhenti sejenak sebelum merespon. Analisis kembali apakah lawan bicara sedang berfokus pada Tugas atau Hubungan Personal.</li>`;
                 } else {
-                    evalHTML += `<li>âŒ <b>Penguasaan Platinum Rule:</b> RENDAH. Anda cenderung memaksakan gaya komunikasi sendiri kepada orang lain.</li>`;
-                    evalHTML += `<li>âŒ <b>Manajemen Saldo Emosional:</b> KRITIS. 'Withdrawal' melebihi 'Deposit', ini berisiko memicu resistensi dan konflik operasional.</li>`;
-                    evalHTML += `<li>ðŸŽ¯ <b>Rekomendasi:</b> Tinjau ulang teori The Platinum Rule. Ingat: perlakukan orang lain sebagaimana MEREKA ingin diperlakukan.</li>`;
+                    evalHTML += `<li>❌ <b>Penguasaan Platinum Rule:</b> RENDAH. Anda cenderung memaksakan gaya komunikasi sendiri kepada orang lain.</li>`;
+                    evalHTML += `<li>❌ <b>Manajemen Saldo Emosional:</b> KRITIS. 'Withdrawal' melebihi 'Deposit', ini berisiko memicu resistensi dan konflik operasional.</li>`;
+                    evalHTML += `<li>🎯 <b>Rekomendasi:</b> Tinjau ulang teori The Platinum Rule. Ingat: perlakukan orang lain sebagaimana MEREKA ingin diperlakukan.</li>`;
                 }
                 evalDetails.innerHTML = evalHTML;
 
@@ -665,7 +709,30 @@
                 const histCont = document.getElementById('history-container');
                 histCont.innerHTML = this.history.join('');
 
+                // Tampilkan Layar Debrief
                 this.showScreen('screen-debrief');
+
+                // -------------------------------------------------------------
+                // PERSIAPAN PAYLOAD DAN PEMANGGILAN API KE GOOGLE SHEETS
+                // -------------------------------------------------------------
+                
+                // Opsional: Bersihkan tag HTML dari history menggunakan regex agar rapi saat dibaca di Google Sheets
+                const cleanHistory = this.history.map(item => item.replace(/<[^>]*>?/gm, '').trim());
+
+                // Menyusun payload dengan format kunci (key) persis dengan spesifikasi GAS
+                const payloadData = {
+                    Timestamp: new Date().toISOString(), // Mencatat waktu pada sisi client
+                    Agent_Name: this.agent.name,
+                    Agent_NIK: this.agent.nik,
+                    Final_Score_Balance: this.score,
+                    Total_Attempts: this.attempts,
+                    Accuracy_Rate: accuracy, 
+                    Final_Evaluation_Status: finalStatusStr,
+                    Interaction_History_Logs: JSON.stringify(cleanHistory) // Diubah ke JSON String untuk kemudahan database
+                };
+
+                // Trigger pengiriman! (Tidak membekukan UI karena bersifat async)
+                sendGameDataToGoogleSheets(payloadData);
             }
         };
 
